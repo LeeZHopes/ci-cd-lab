@@ -58,6 +58,13 @@ jobs:
             --cov --cov-report=term-missing --cov-report=xml:coverage.xml \
             --cov-fail-under=80
 
+      # 诊断：报告上传失败时，这一步能立刻区分「没生成」和「没跑」
+      - name: 报告文件清单
+        if: always()
+        run: |
+          echo "工作目录: $(pwd)"
+          ls -la report.xml coverage.xml 2>/dev/null || echo "!! 报告不存在：多半是前面的测试步骤被跳过或提前失败"
+
       # 失败才是最需要报告的时刻，所以用 always()
       - name: 上传测试报告
         if: always()
