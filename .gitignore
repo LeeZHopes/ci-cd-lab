@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 测试与覆盖率产物（CI 里会重新生成并作为 artifact 上传）
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+report.xml
+htmlcov/
+junit*.xml
+
+# 本地跑测试时可能留下的沙箱/pytest 临时目录
+pytest-cache-files-*/
+
+# 编辑器
+.vscode/
+.idea/

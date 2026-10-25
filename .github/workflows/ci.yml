@@ -1,0 +1,62 @@
+# Python 项目的测试门禁（第 04 课）
+#
+# 三条防线：lint（秒级）→ 测试（含覆盖率门槛）→ 报告留档（失败也要留）
+# 复制到新仓库的 .github/workflows/ci.yml 即可使用。
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false          # 一个版本挂了别取消其它，便于看清全貌
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: lint（最便宜，先跑）
+        run: ruff check .
+
+      - name: 测试 + 覆盖率门槛
+        run: |
+          pytest \
+            --junitxml=report.xml \
+            --cov --cov-report=term-missing --cov-report=xml:coverage.xml \
+            --cov-fail-under=80
+
+      # 失败才是最需要报告的时刻，所以用 always()
+      - name: 上传测试报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ matrix.python-version }}
+          path: |
+            report.xml
+            coverage.xml
+          retention-days: 14

@@ -1,0 +1,28 @@
+[project]
+name = "jitdemo"
+version = "0.1.0"
+description = "JIT 缺陷预测评估函数的最小骨架（第 04 课测试门禁用）"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["jitdemo"]
+branch = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
