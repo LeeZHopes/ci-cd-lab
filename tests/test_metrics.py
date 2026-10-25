@@ -1,6 +1,6 @@
 import pytest
 
-from jitdemo import f1, precision, recall, recall_at_loc_ratio
+from jitdemo import f1, precision, recall
 
 
 def test_precision_basic():
