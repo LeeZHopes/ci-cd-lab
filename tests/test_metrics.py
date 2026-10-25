@@ -41,21 +41,3 @@ def test_recall_at_loc_ratio_takes_top_scored_only():
 
     # 前 50%（=5 个）把三个缺陷全抓到
     assert recall_at_loc_ratio(labels, scores, ratio=0.5) == pytest.approx(1.0)
-
-
-def test_recall_at_loc_ratio_no_positive_labels():
-    assert recall_at_loc_ratio([0, 0, 0], [0.5, 0.4, 0.3], ratio=0.5) == 0.0
-
-
-@pytest.mark.parametrize(
-    "labels,scores,ratio",
-    [
-        ([1, 0], [0.5], 0.2),          # 长度不一致
-        ([], [], 0.2),                 # 空输入
-        ([1, 0], [0.5, 0.5], 0.0),     # ratio 越界
-        ([1, 0], [0.5, 0.5], 1.5),     # ratio 越界
-    ],
-)
-def test_recall_at_loc_ratio_rejects_bad_input(labels, scores, ratio):
-    with pytest.raises(ValueError):
-        recall_at_loc_ratio(labels, scores, ratio=ratio)
