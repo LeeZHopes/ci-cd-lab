@@ -40,8 +40,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
+      # 先打印工具版本：失败时能立刻区分「没装上」和「真报错」
+      - name: 工具版本
+        run: |
+          python --version
+          python -m pip list | grep -Ei 'pytest|ruff|coverage' || true
+          python -m ruff --version
+
+      # 用 python -m 调用，避免依赖 Scripts 目录是否在 PATH 上
       - name: lint（最便宜，先跑）
-        run: ruff check .
+        run: python -m ruff check . --output-format=concise
 
       - name: 测试 + 覆盖率门槛
         run: |

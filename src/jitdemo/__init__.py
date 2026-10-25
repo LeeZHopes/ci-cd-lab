@@ -5,4 +5,5 @@
 
 from .metrics import f1, precision, recall, recall_at_loc_ratio
 
-__all__ = ["precision", "recall", "f1", "recall_at_loc_ratio"]
+# 注意：ruff 的 RUF022 要求 __all__ 按字母序排列（f1 在 precision 之前）
+__all__ = ["f1", "precision", "recall", "recall_at_loc_ratio"]

@@ -42,6 +42,11 @@ python -m venv .venv
 | ② 门槛触发 | 再把 `test_recall_at_loc_ratio_takes_top_scored_only` 删掉 | 覆盖率 **58.5%**，**红**，且报告照样上传 |
 | ③ 断言失败 | 把某条断言改成 `assert 1 == 2` | pytest 红，junit 报告里能定位到具体断言 |
 
-初始状态实测：**12 passed，覆盖率 100%**（29 条语句 / 12 个分支），ruff 无告警。
+初始状态实测：**12 passed，覆盖率 100%**（29 条语句 / 12 个分支）。
+
+**lint 曾真实红过一次**（2026-10-25，CI 首次运行）：`RUF022 __all__ is not sorted`。原因不是代码写错，而是 `dev` 依赖写的是 `ruff>=0.6`，CI 装到的最新版默认多出这条规则。两条教训：
+
+1. **规则集会随上游版本漂移** → 在 `pyproject.toml` 里显式 `[tool.ruff.lint] select = [...]`，或把 ruff 锁到具体版本；两者选一个，别吃默认值。
+2. 这类错误 **99% 可自动修**：`python -m ruff check . --fix`（输出里带 `[*]` 的都属此类）。
 
 > 结论：门禁的价值不在「跑测试」，而在**红了就合不进去**；而门槛只在你跨过那条线时才拦你——所以 ratcheting 要贴近现状。

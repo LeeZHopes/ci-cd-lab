@@ -26,3 +26,13 @@ branch = true
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+# 显式声明规则集，不吃 ruff 新版本的「默认值变动」。
+# 教训来自第 04 课实测：dev 依赖写 ruff>=0.6 会装到最新版，
+# 而新版本默认多出的 RUF022（__all__ 需字母序）让 CI 突然变红。
+# 显式 select 后，行为与 ruff 版本无关，可复现。
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "RUF022"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["jitdemo"]
